@@ -1,9 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Mobile from './pages/Mobile';
 import Server from './pages/Server';
 import Website from './pages/Website';
+import ScrollToTop from './components/ui/ScrollToTop';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/server" element={<Server />} />
         <Route path="/website" element={<Website />} />
       </Routes>
+      <ScrollToTop />
     </BrowserRouter>
   );
 };
