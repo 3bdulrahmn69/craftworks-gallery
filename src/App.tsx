@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Mobile from './pages/Mobile';
-import Server from './pages/Server';
+import Backend from './pages/Backend';
 import Website from './pages/Website';
 import ScrollToTop from './components/ui/ScrollToTop';
 
@@ -13,7 +13,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mobile" element={<Mobile />} />
-        <Route path="/server" element={<Server />} />
+        <Route path="/backend" element={<Backend />} />
         <Route path="/website" element={<Website />} />
       </Routes>
       <ScrollToTop />

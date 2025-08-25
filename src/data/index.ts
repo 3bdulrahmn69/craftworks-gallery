@@ -2,6 +2,7 @@ import type { Platform, TeamMember } from '../types';
 import { RiAdminLine } from 'react-icons/ri';
 import { FiGlobe, FiServer, FiSmartphone } from 'react-icons/fi';
 import Abdulrahman_Moussa from '/Abdulrahman_Moussa.jpg';
+import Mona_Abdelazim from '/Mona_Abdelazim.jpg';
 
 export const TeamMembers: TeamMember[] = [
   {
@@ -29,14 +30,22 @@ export const TeamMembers: TeamMember[] = [
   {
     name: 'Mona Abdelaziem',
     role: 'Flutter Developer',
+    avatar: Mona_Abdelazim,
     bio: 'Passionate about building natively compiled applications for mobile, web, and desktop from a single codebase.',
     location: 'El Sharqia, Egypt',
+    links: {
+      linkedin: 'https://www.linkedin.com/in/mona-abdelazim-750016231',
+      email: 'mounhabdelazim@gmail.com',
+    },
   },
   {
     name: 'Shimaa Ibrahim',
     role: 'Flutter Developer',
     bio: 'Dedicated to delivering high-quality mobile applications with a focus on performance and usability.',
     location: 'El Sharqia, Egypt',
+    links: {
+      linkedin: 'https://www.linkedin.com/in/shimaa-elnaggar-80b3021b2',
+    },
   },
 ];
 
@@ -137,6 +146,6 @@ export const platforms: Platform[] = [
     ],
     Icon: FiServer,
     color: '#eab308',
-    route: '/server',
+    route: '/backend',
   },
 ];
