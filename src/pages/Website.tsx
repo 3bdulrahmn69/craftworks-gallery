@@ -1,5 +1,5 @@
 const Website = () => {
-  return <div>Website</div>;
+  return <main>Website</main>;
 };
 
 export default Website;

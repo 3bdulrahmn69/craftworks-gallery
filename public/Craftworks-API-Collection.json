@@ -1,0 +1,3078 @@
+{
+  "info": {
+    "name": "Craftworks Backend API",
+    "description": "Complete API collection for Craftworks backend with all endpoints including authentication, users, jobs (with enhanced search and filtering), quotes, invitations, notifications, services, real-time messaging, reviews & disputes, comprehensive wallet management, payment processing, admin payment dashboard, and withdrawal management. v2.1.0 Updates: Implemented a dynamic fee structure based on completed jobs count (0% for first job, gradually increasing to 5%), removed fee-config endpoints in favor of code-based fee management, added completed jobs tracking for both clients and craftsmen. v2.0.0 Updates: Major system enhancement with comprehensive wallet management - added job duration tracking, enhanced quote system with duration requirements, complete wallet system for craftsman income and withdrawals, admin payment dashboard with withdrawal processing.",
+    "version": "2.1.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client1@example.com\",\n  \"password\": \"123456!Aa\",\n  \"phone\": \"+201018326780\",\n  \"role\": \"client\",\n  \"fullName\": \"John Client\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Craftsman",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"craftsman1@example.com\",\n  \"password\": \"123456!Aa\",\n  \"phone\": \"+201018326781\",\n  \"role\": \"craftsman\",\n  \"fullName\": \"Ahmed Craftsman\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Email (Clients)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client1@example.com\",\n  \"password\": \"123456!Aa\",\n  \"type\": \"public\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Phone (Clients)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+201018326780\",\n  \"password\": \"123456!Aa\",\n  \"type\": \"public\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('auth_token', response.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456!Aa\",\n  \"type\": \"internal\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client1@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/forgot-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"RESET_TOKEN_HERE\",\n  \"newPassword\": \"New123456!Aa\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "reset-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"OldPassword123!\",\n  \"newPassword\": \"NewPassword456!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "change-password"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"phone\": \"+201234567890\",\n  \"address\": {\n    \"country\": \"Egypt\",\n    \"state\": \"Cairo\",\n    \"city\": \"New Cairo\",\n    \"street\": \"Updated Street Address\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Update current user profile. Multiple fields can be updated in a single request. All fields are optional - send only the fields you want to update."
+          },
+          "response": [
+            {
+              "name": "Successful Profile Update",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcde\",\n    \"email\": \"user@example.com\",\n    \"fullName\": \"Updated Name\",\n    \"role\": \"craftsman\",\n    \"phone\": \"+201234567890\",\n    \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/user.webp\",\n    \"rating\": 4.8,\n    \"ratingCount\": 25,\n    \"bio\": \"Professional craftsman with 10+ years experience in plumbing and electrical work. Specialized in residential repairs and installations.\",\n    \"service\": {\n      \"_id\": \"64a7b8f5e1234567890abcdf\",\n      \"name\": \"Plumbing Services\",\n      \"icon\": \"plumbing-icon.svg\",\n      \"description\": \"Professional plumbing services\"\n    },\n    \"address\": {\n      \"country\": \"Egypt\",\n      \"state\": \"Cairo\",\n      \"city\": \"New Cairo\",\n      \"street\": \"Updated Street Address\"\n    },\n    \"createdAt\": \"2023-07-07T10:30:00.000Z\"\n  },\n  \"message\": \"Profile updated successfully\"\n}"
+            },
+            {
+              "name": "Partial Update - Only Name",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcde\",\n    \"email\": \"user@example.com\",\n    \"fullName\": \"Updated Name\",\n    \"role\": \"craftsman\",\n    \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/user.webp\",\n    \"rating\": 4.8,\n    \"ratingCount\": 25,\n    \"createdAt\": \"2023-07-07T10:30:00.000Z\"\n  },\n  \"message\": \"Profile updated successfully\"\n}"
+            },
+            {
+              "name": "Bio Update for Craftsman",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcde\",\n    \"email\": \"craftsman@example.com\",\n    \"fullName\": \"Ahmed Hassan\",\n    \"role\": \"craftsman\",\n    \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/ahmed.webp\",\n    \"rating\": 4.8,\n    \"ratingCount\": 25,\n    \"bio\": \"Professional craftsman with 10+ years experience in plumbing and electrical work. Specialized in residential repairs and installations.\",\n    \"service\": {\n      \"_id\": \"64a7b8f5e1234567890abcdf\",\n      \"name\": \"Plumbing Services\",\n      \"icon\": \"plumbing-icon.svg\",\n      \"description\": \"Professional plumbing services\"\n    },\n    \"createdAt\": \"2023-07-07T10:30:00.000Z\"\n  },\n  \"message\": \"Profile updated successfully\"\n}"
+            },
+            {
+              "name": "Error - Email Already Exists",
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Email already exists\"\n}"
+            },
+            {
+              "name": "Error - Invalid Input",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid email format\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Profile Picture",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me/profile-picture",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "profile-picture"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Public Profile of User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["users", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER_ID_HERE"
+                }
+              ]
+            },
+            "description": "Get public profile of any user. For craftsmen, response now includes 'isVerified' field indicating verification status (true if verified, false if pending/rejected)."
+          },
+          "response": [
+            {
+              "name": "Verified Craftsman Profile",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/64a7b8f5e1234567890abcde",
+                  "host": ["{{base_url}}"],
+                  "path": ["users", "64a7b8f5e1234567890abcde"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcde\",\n    \"email\": \"ahmed.hassan@example.com\",\n    \"fullName\": \"Ahmed Hassan\",\n    \"role\": \"craftsman\",\n    \"profilePicture\": \"https://res.cloudinary.com/your-cloud/image/upload/v1691234567/profile-images/ahmed.webp\",\n    \"rating\": 4.8,\n    \"ratingCount\": 25,\n    \"isVerified\": true,\n    \"service\": {\n      \"_id\": \"64a7b8f5e1234567890abcdf\",\n      \"name\": \"Plumbing Services\",\n      \"icon\": \"plumbing-icon.svg\",\n      \"description\": \"Professional plumbing services\"\n    },\n    \"createdAt\": \"2023-07-07T10:30:00.000Z\"\n  },\n  \"message\": \"User profile retrieved successfully\"\n}"
+            },
+            {
+              "name": "Client Profile (No Verification Status)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/users/64a7b8f5e1234567890abcdf",
+                  "host": ["{{base_url}}"],
+                  "path": ["users", "64a7b8f5e1234567890abcdf"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcdf\",\n    \"email\": \"sara.ahmed@example.com\",\n    \"fullName\": \"Sara Ahmed\",\n    \"role\": \"client\",\n    \"profilePicture\": \"https://res.cloudinary.com/your-cloud/image/upload/v1691234567/profile-images/sara.webp\",\n    \"createdAt\": \"2023-07-07T10:30:00.000Z\"\n  },\n  \"message\": \"User profile retrieved successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Submit Verification with File Upload (Craftsman Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "verificationDocs",
+                  "type": "file",
+                  "src": "/path/to/id-card-front.jpg",
+                  "description": "ID Card Front Image"
+                },
+                {
+                  "key": "verificationDocs",
+                  "type": "file",
+                  "src": "/path/to/id-card-back.jpg",
+                  "description": "ID Card Back Image"
+                },
+                {
+                  "key": "verificationDocs",
+                  "type": "file",
+                  "src": "/path/to/license.pdf",
+                  "description": "Professional License PDF"
+                },
+                {
+                  "key": "docNames[]",
+                  "value": "National ID Card - Front",
+                  "type": "text",
+                  "description": "Custom name for first document"
+                },
+                {
+                  "key": "docNames[]",
+                  "value": "National ID Card - Back",
+                  "type": "text",
+                  "description": "Custom name for second document"
+                },
+                {
+                  "key": "docNames[]",
+                  "value": "Professional License",
+                  "type": "text",
+                  "description": "Custom name for third document"
+                },
+                {
+                  "key": "docTypes[]",
+                  "value": "ID-Card",
+                  "type": "text",
+                  "description": "Document type classification"
+                },
+                {
+                  "key": "docTypes[]",
+                  "value": "ID-Card",
+                  "type": "text",
+                  "description": "Document type classification"
+                },
+                {
+                  "key": "docTypes[]",
+                  "value": "Professional-License",
+                  "type": "text",
+                  "description": "Document type classification"
+                },
+                {
+                  "key": "service",
+                  "value": "SERVICE_ID_HERE",
+                  "type": "text",
+                  "description": "Service ID (optional)"
+                },
+                {
+                  "key": "portfolioImageUrls[]",
+                  "value": "https://res.cloudinary.com/demo/image/upload/portfolio1.jpg",
+                  "type": "text",
+                  "description": "Portfolio image URL (optional)"
+                },
+                {
+                  "key": "portfolioImageUrls[]",
+                  "value": "https://res.cloudinary.com/demo/image/upload/portfolio2.jpg",
+                  "type": "text",
+                  "description": "Portfolio image URL (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/users/craftsman/verification",
+              "host": ["{{base_url}}"],
+              "path": ["users", "craftsman", "verification"]
+            },
+            "description": "Simplified verification endpoint that supports file uploads with custom names and types. Only requires document images - no skills or bio needed. Files are automatically uploaded to Cloudinary. Supports up to 10 files (10MB each) including images and PDFs."
+          },
+          "response": [
+            {
+              "name": "Successful Verification Submission",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "verificationDocs",
+                      "type": "file",
+                      "src": "/path/to/id-card-front.jpg"
+                    },
+                    {
+                      "key": "docNames[]",
+                      "value": "National ID Card - Front",
+                      "type": "text"
+                    },
+                    {
+                      "key": "docTypes[]",
+                      "value": "ID-Card",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/users/craftsman/verification",
+                  "host": ["{{base_url}}"],
+                  "path": ["users", "craftsman", "verification"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"64a7b8f5e1234567890abcde\",\n    \"email\": \"craftsman@example.com\",\n    \"fullName\": \"Ahmed Hassan\",\n    \"role\": \"craftsman\",\n    \"isVerified\": false\n  },\n  \"message\": \"Verification documents submitted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Submit Verification (Legacy JSON Format)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"portfolioImageUrls\": [\n    \"https://res.cloudinary.com/demo/image/upload/portfolio1.jpg\",\n    \"https://res.cloudinary.com/demo/image/upload/portfolio2.jpg\"\n  ],\n  \"verificationDocs\": [\n    {\n      \"docType\": \"National ID\",\n      \"docUrl\": \"https://res.cloudinary.com/demo/image/upload/national_id.jpg\",\n      \"docName\": \"National ID Card\"\n    },\n    {\n      \"docType\": \"Trade License\",\n      \"docUrl\": \"https://res.cloudinary.com/demo/image/upload/trade_license.jpg\",\n      \"docName\": \"Professional License\"\n    }\n  ]\n}",
+              "description": "Legacy format for verification submission with pre-uploaded document URLs"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/craftsman/verification",
+              "host": ["{{base_url}}"],
+              "path": ["users", "craftsman", "verification"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Recommended Craftsmen",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/recommendations?jobId=JOB_ID_HERE",
+              "host": ["{{base_url}}"],
+              "path": ["users", "recommendations"],
+              "query": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE",
+                  "description": "Required: ObjectId of the job to get craftsman recommendations for. Returns craftsmen with fully populated service objects including _id, name, icon, and description."
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Quotes (Craftsman Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me/quotes?page=1&limit=10&status=Submitted",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "quotes"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "status",
+                  "value": "Submitted",
+                  "description": "Filter by quote status (Submitted, Accepted, Declined)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Invitations (Craftsman Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me/invitations?page=1&limit=10&status=Pending",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "invitations"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                },
+                {
+                  "key": "status",
+                  "value": "Pending",
+                  "description": "Filter by invitation status (Pending, Accepted, Rejected)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Jobs (Client: Posted Jobs, Craftsman: Hired Jobs)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me/jobs?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "jobs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page (default: 10, max: 100)"
+                },
+                {
+                  "key": "status",
+                  "value": "Completed",
+                  "description": "Filter jobs by status (Posted, Quoted, Hired, On The Way, Completed, Disputed, Cancelled) - case insensitive"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Portfolio Images (Craftsmen)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "portfolioImages",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "portfolioImages",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/portfolio",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "portfolio"]
+            },
+            "description": "Add portfolio images for craftsmen. Max 10 images total. New images will be added to existing ones."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Portfolio Image (Craftsmen)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"imageUrl\": \"https://res.cloudinary.com/craftworks/image/upload/v1/portfolio/plumbing1.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me/portfolio",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me", "portfolio"]
+            },
+            "description": "Delete a specific portfolio image by URL. Send the image URL in the request body."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Create Job with Images (Client Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Fix kitchen sink leak",
+                  "type": "text",
+                  "description": "Job title"
+                },
+                {
+                  "key": "description",
+                  "value": "There is a persistent leak under the kitchen sink that needs immediate attention. Water is pooling and causing damage.",
+                  "type": "text",
+                  "description": "Detailed job description"
+                },
+                {
+                  "key": "service",
+                  "value": "60f1b5b5b5b5b5b5b5b5b5b1",
+                  "type": "text",
+                  "description": "Service ID or service name"
+                },
+                {
+                  "key": "address[country]",
+                  "value": "Egypt",
+                  "type": "text",
+                  "description": "Country"
+                },
+                {
+                  "key": "address[state]",
+                  "value": "Cairo",
+                  "type": "text",
+                  "description": "State/Province"
+                },
+                {
+                  "key": "address[city]",
+                  "value": "New Cairo",
+                  "type": "text",
+                  "description": "City"
+                },
+                {
+                  "key": "address[street]",
+                  "value": "123 Main Street",
+                  "type": "text",
+                  "description": "Street address"
+                },
+                {
+                  "key": "location[type]",
+                  "value": "Point",
+                  "type": "text",
+                  "description": "GeoJSON type"
+                },
+                {
+                  "key": "location[coordinates]",
+                  "value": "31.2,30.1",
+                  "type": "text",
+                  "description": "GeoJSON coordinates as comma-separated values: longitude,latitude. Supported formats: '31.2,30.1' (recommended), '[31.2,30.1]', or '[31.2, 30.1]'. Always longitude first, then latitude."
+                },
+                {
+                  "key": "paymentType",
+                  "value": "Cash",
+                  "type": "text",
+                  "description": "Payment method: Cash, Escrow, CashProtected"
+                },
+                {
+                  "key": "photos",
+                  "type": "file",
+                  "description": "Image file (up to 5 images, 10MB each, formats: jpg, png, gif, webp)"
+                },
+                {
+                  "key": "photos",
+                  "type": "file",
+                  "description": "Additional image file (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Job (JSON - No Images)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Fix kitchen sink leak\",\n  \"description\": \"There is a persistent leak under the kitchen sink that needs immediate attention. Water is pooling and causing damage.\",\n  \"service\": \"60f1b5b5b5b5b5b5b5b5b5b1\",\n  \"address\": {\n    \"country\": \"Egypt\",\n    \"state\": \"Cairo\",\n    \"city\": \"New Cairo\",\n    \"street\": \"123 Main Street\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [31.2, 30.1]\n  },\n  \"paymentType\": \"cash\",\n  \"jobDate\": \"2024-02-15T10:00:00.000Z\",\n  \"jobDuration\": 4\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Job - Coordinate Format Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Test Coordinate Parsing",
+                  "type": "text",
+                  "description": "Testing various coordinate formats"
+                },
+                {
+                  "key": "description",
+                  "value": "This is a test job to verify coordinate parsing works with different formats",
+                  "type": "text"
+                },
+                {
+                  "key": "service",
+                  "value": "60f1b5b5b5b5b5b5b5b5b5b1",
+                  "type": "text"
+                },
+                {
+                  "key": "address[country]",
+                  "value": "Egypt",
+                  "type": "text"
+                },
+                {
+                  "key": "address[state]",
+                  "value": "Cairo",
+                  "type": "text"
+                },
+                {
+                  "key": "address[city]",
+                  "value": "New Cairo",
+                  "type": "text"
+                },
+                {
+                  "key": "address[street]",
+                  "value": "Test Street 123",
+                  "type": "text"
+                },
+                {
+                  "key": "location[type]",
+                  "value": "Point",
+                  "type": "text"
+                },
+                {
+                  "key": "location[coordinates]",
+                  "value": "31.2,30.1",
+                  "type": "text",
+                  "description": "✅ RECOMMENDED FORMAT: Simple comma-separated string. Also supported: '[31.2,30.1]', '[ \\'31.2,30.1\\' ]', '[31.2, 30.1]'"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "Cash",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs?service=Plumbing&status=Posted&state=Cairo&city=New Cairo&paymentType=Cash&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"],
+              "query": [
+                {
+                  "key": "service",
+                  "value": "Plumbing",
+                  "description": "Filter by service ID or service name"
+                },
+                {
+                  "key": "status",
+                  "value": "Posted",
+                  "description": "Filter by status"
+                },
+                {
+                  "key": "state",
+                  "value": "Cairo",
+                  "description": "Filter by address state"
+                },
+                {
+                  "key": "city",
+                  "value": "New Cairo",
+                  "description": "Filter by address city"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "Cash",
+                  "description": "Filter by payment type (Cash, Escrow, CashProtected)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/search?q=kitchen leak&service=Plumbing&state=Cairo&city=New Cairo&paymentType=Cash&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "kitchen leak",
+                  "description": "Search term to match against job title and description (required)"
+                },
+                {
+                  "key": "service",
+                  "value": "Plumbing",
+                  "description": "Filter by service ID or service name (optional)"
+                },
+                {
+                  "key": "status",
+                  "value": "Posted",
+                  "description": "Filter by status (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "state",
+                  "value": "Cairo",
+                  "description": "Filter by address state (optional)"
+                },
+                {
+                  "key": "city",
+                  "value": "New Cairo",
+                  "description": "Filter by address city (optional)"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "Cash",
+                  "description": "Filter by payment type (optional)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (optional, default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page (optional, default: 10)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job (Client Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Fix kitchen sink leak (URGENT)\",\n  \"description\": \"Updated description with more details.\",\n  \"paymentType\": \"Escrow\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job (Client Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job Status (Enhanced)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"On The Way\",\n  \"note\": \"Regular status update - craftsman changing to On The Way\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/status",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "status"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "507f1f77bcf86cd799439011"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Status Update",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"On The Way\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/507f1f77bcf86cd799439011/status",
+                  "host": ["{{base_url}}"],
+                  "path": ["jobs", "507f1f77bcf86cd799439011", "status"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"507f1f77bcf86cd799439011\",\n    \"title\": \"Fix kitchen sink\",\n    \"status\": \"On The Way\",\n    \"jobDate\": \"2025-08-12T10:00:00Z\",\n    \"client\": {\n      \"_id\": \"507f1f77bcf86cd799439012\",\n      \"fullName\": \"John Client\"\n    },\n    \"craftsman\": {\n      \"_id\": \"507f1f77bcf86cd799439013\",\n      \"fullName\": \"Ahmed Craftsman\"\n    }\n  },\n  \"message\": \"Job status updated successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reschedule Job (Craftsman Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Rescheduled\",\n  \"newJobDate\": \"2025-08-15T14:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/status",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "status"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "507f1f77bcf86cd799439011"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job Date (Client Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobDate\": \"2025-08-15T14:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/date",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "date"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "507f1f77bcf86cd799439011"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Date Update",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"jobDate\": \"2025-08-15T14:00:00Z\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/jobs/507f1f77bcf86cd799439011/date",
+                  "host": ["{{base_url}}"],
+                  "path": ["jobs", "507f1f77bcf86cd799439011", "date"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"_id\": \"507f1f77bcf86cd799439011\",\n    \"title\": \"Fix kitchen sink\",\n    \"jobDate\": \"2025-08-15T14:00:00Z\",\n    \"status\": \"Hired\",\n    \"client\": {\n      \"_id\": \"507f1f77bcf86cd799439012\",\n      \"fullName\": \"John Client\"\n    },\n    \"craftsman\": {\n      \"_id\": \"507f1f77bcf86cd799439013\",\n      \"fullName\": \"Ahmed Craftsman\"\n    }\n  },\n  \"message\": \"Job date updated successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Quotes",
+      "item": [
+        {
+          "name": "Submit Quote (Craftsman Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1500,\n  \"duration\": 6,\n  \"notes\": \"I can fix the leak today. Price includes parts and labor. 2 year warranty on work.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/quotes",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "quotes"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Quotes (Client Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/quotes",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "quotes"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Quote (Client Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/quotes/:quoteId/accept",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "quotes", ":quoteId", "accept"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                },
+                {
+                  "key": "quoteId",
+                  "value": "QUOTE_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Quote (Client Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/quotes/:quoteId/reject",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "quotes", ":quoteId", "reject"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE"
+                },
+                {
+                  "key": "quoteId",
+                  "value": "QUOTE_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Invitations",
+      "description": "Job invitation management endpoints. v1.5.0 FIXES: All invitation routes now working correctly - fixed route mounting issues, no more 404 errors on POST /jobs/:jobId/invite.",
+      "item": [
+        {
+          "name": "Invite Craftsman to Job (Client Only) - FIXED",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"craftsmanId\": \"CRAFTSMAN_ID_HERE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/invite",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "invite"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE",
+                  "description": "✅ Route now working correctly - fixed mounting issues in v1.5.0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job Invitations (Client Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/invitations",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "invitations"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE",
+                  "description": "✅ Route working correctly - shows all invitations for a specific job"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Respond to Invitation (Craftsman Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"response\": \"Accepted\",\n  \"price\": 150.00,\n  \"notes\": \"I can complete this job within 2 days with high quality materials and provide warranty\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/jobs/:jobId/invitations/respond",
+              "host": ["{{base_url}}"],
+              "path": ["jobs", ":jobId", "invitations", "respond"],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "JOB_ID_HERE",
+                  "description": "✅ Route working correctly - craftsmen can accept/reject invitations"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationIds\": [\"NOTIFICATION_ID_1\", \"NOTIFICATION_ID_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/mark-read",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "mark-read"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/mark-read",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "mark-read"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "description": "Service management endpoints. v1.5.0: Enhanced service population in recommendations endpoint - now returns full service objects with _id, name, icon, description instead of just service IDs.",
+      "item": [
+        {
+          "name": "List All Services (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/services?lang=en",
+              "host": ["{{base_url}}"],
+              "path": ["services"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "en",
+                  "description": "Language preference: 'en' for English, 'ar' for Arabic, or omit for full multilingual data"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nameEn",
+                  "value": "Landscaping",
+                  "type": "text"
+                },
+                {
+                  "key": "nameAr",
+                  "value": "تنسيق الحدائق",
+                  "type": "text"
+                },
+                {
+                  "key": "descriptionEn",
+                  "value": "Professional garden and landscape design and maintenance services",
+                  "type": "text"
+                },
+                {
+                  "key": "descriptionAr",
+                  "value": "خدمات تصميم وصيانة الحدائق والمناظر الطبيعية المهنية",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/services",
+              "host": ["{{base_url}}"],
+              "path": ["services"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nameEn",
+                  "value": "Landscaping & Gardening",
+                  "type": "text"
+                },
+                {
+                  "key": "nameAr",
+                  "value": "تنسيق الحدائق والبستنة",
+                  "type": "text"
+                },
+                {
+                  "key": "descriptionEn",
+                  "value": "Complete garden design, landscaping, and maintenance services with expert consultation",
+                  "type": "text"
+                },
+                {
+                  "key": "descriptionAr",
+                  "value": "خدمات تصميم الحدائق والتنسيق والصيانة الشاملة مع استشارة خبراء",
+                  "type": "text"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/services/:serviceId",
+              "host": ["{{base_url}}"],
+              "path": ["services", ":serviceId"],
+              "variable": [
+                {
+                  "key": "serviceId",
+                  "value": "SERVICE_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/services/:serviceId",
+              "host": ["{{base_url}}"],
+              "path": ["services", ":serviceId"],
+              "variable": [
+                {
+                  "key": "serviceId",
+                  "value": "SERVICE_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Real-time Messaging",
+      "description": "Real-time messaging system with Socket.IO integration. Allows clients and craftsmen to communicate in real-time with text and image messages, typing indicators, read receipts, and admin moderation capabilities.",
+      "item": [
+        {
+          "name": "Create Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participantId\": \"participant_user_id\",\n  \"jobId\": \"job_id_optional\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/messages/chats",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Chats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/chats?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/chats/:chatId",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats", ":chatId"],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/chats/:chatId/messages?page=1&limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats", ":chatId", "messages"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Message (HTTP Fallback)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messageType\": \"text\",\n  \"content\": \"Hello, when can you start the work?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/messages/chats/:chatId/messages",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats", ":chatId", "messages"],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Image Message (HTTP Fallback)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"messageType\": \"image\",\n  \"content\": \"https://cloudinary.com/image-url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/messages/chats/:chatId/messages",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats", ":chatId", "messages"],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Messages as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/chats/:chatId/read",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "chats", ":chatId", "read"],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/messages/:messageId",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "messages", ":messageId"],
+              "variable": [
+                {
+                  "key": "messageId",
+                  "value": "message_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Chats (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/admin/chats?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "admin", "chats"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Chat Messages (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/messages/admin/chats/:chatId/messages?page=1&limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["messages", "admin", "chats", ":chatId", "messages"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "chatId",
+                  "value": "chat_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Create Admin User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newadmin@example.com\",\n  \"password\": \"Admin123456!Aa\",\n  \"role\": \"admin\",\n  \"fullName\": \"New Admin User\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ban User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/:userId/ban",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", ":userId", "ban"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unban User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/:userId/unban",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", ":userId", "unban"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "USER_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users?page=1&limit=10&role=client",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "role",
+                  "value": "client",
+                  "description": "Filter by role: client, craftsman, admin, moderator"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pending Verifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/verifications",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "verifications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/verifications/:verificationId/approve",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "verifications", ":verificationId", "approve"],
+              "variable": [
+                {
+                  "key": "verificationId",
+                  "value": "VERIFICATION_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/verifications/:verificationId/reject",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "verifications", ":verificationId", "reject"],
+              "variable": [
+                {
+                  "key": "verificationId",
+                  "value": "VERIFICATION_ID_HERE"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"507f1f77bcf86cd799439012\",\n  \"rating\": 5,\n  \"comment\": \"Excellent work! Very professional and completed on time.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews",
+              "host": ["{{base_url}}"],
+              "path": ["reviews"]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Review Creation",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"jobId\": \"507f1f77bcf86cd799439012\",\n  \"rating\": 5,\n  \"comment\": \"Excellent work! Very professional and completed on time.\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/reviews",
+                  "host": ["{{base_url}}"],
+                  "path": ["reviews"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"507f1f77bcf86cd799439013\",\n    \"job\": \"507f1f77bcf86cd799439012\",\n    \"reviewer\": {\n      \"id\": \"507f1f77bcf86cd799439014\",\n      \"fullName\": \"John Client\",\n      \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/john.webp\",\n      \"role\": \"client\"\n    },\n    \"reviewee\": {\n      \"id\": \"507f1f77bcf86cd799439015\",\n      \"fullName\": \"Ahmed Craftsman\",\n      \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/ahmed.webp\",\n      \"role\": \"craftsman\"\n    },\n    \"rating\": 5,\n    \"comment\": \"Excellent work! Very professional and completed on time.\",\n    \"createdAt\": \"2025-08-07T10:30:00.000Z\"\n  },\n  \"message\": \"Review created successfully\"\n}"
+            },
+            {
+              "name": "Successful Review Creation (Craftsman reviewing Client)",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"507f1f77bcf86cd799439099\",\n    \"job\": \"507f1f77bcf86cd799439012\",\n    \"reviewer\": {\n      \"id\": \"507f1f77bcf86cd799439015\",\n      \"fullName\": \"Ahmed Craftsman\",\n      \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/ahmed.webp\",\n      \"role\": \"craftsman\"\n    },\n    \"reviewee\": {\n      \"id\": \"507f1f77bcf86cd799439014\",\n      \"fullName\": \"John Client\",\n      \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/john.webp\",\n      \"role\": \"client\"\n    },\n    \"rating\": 5,\n    \"comment\": \"Great client, smooth communication.\",\n    \"createdAt\": \"2025-08-07T10:40:00.000Z\"\n  },\n  \"message\": \"Review created successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User Reviews",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/user/507f1f77bcf86cd799439015?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "user", "507f1f77bcf86cd799439015"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of reviews per page (default: 10, max: 50)"
+                }
+              ]
+            },
+            "description": "Returns all reviews for the specified user (as reviewee), including reviews that are not yet visible in the double-blind system. Returns 404 if the user does not exist, and 400 for invalid user ID."
+          },
+          "response": [
+            {
+              "name": "Successful - Includes all reviews (visible and pending)",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"reviews\": [\n      {\n        \"id\": \"507f1f77bcf86cd799439013\",\n        \"job\": \"507f1f77bcf86cd799439012\",\n        \"reviewer\": {\n          \"id\": \"507f1f77bcf86cd799439014\",\n          \"fullName\": \"John Client\",\n          \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/john.webp\",\n          \"role\": \"client\"\n        },\n        \"reviewee\": {\n          \"id\": \"507f1f77bcf86cd799439015\",\n          \"fullName\": \"Ahmed Craftsman\",\n          \"profilePicture\": \"https://res.cloudinary.com/craftworks/image/upload/v1691234567/profile-images/ahmed.webp\",\n          \"role\": \"craftsman\"\n        },\n        \"rating\": 5,\n        \"comment\": \"Excellent work! Very professional and completed on time.\",\n        \"createdAt\": \"2025-08-07T10:30:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"page\": 1,\n      \"limit\": 10,\n      \"totalPages\": 1,\n      \"totalItems\": 1\n    }\n  },\n  \"message\": \"Reviews retrieved successfully\"\n}"
+            },
+            {
+              "name": "User Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"statusCode\": 404\n}"
+            },
+            {
+              "name": "Invalid User ID",
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid user ID\",\n  \"statusCode\": 400\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Job Reviews",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/job/507f1f77bcf86cd799439012",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "job", "507f1f77bcf86cd799439012"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Review Eligibility",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reviews/job/507f1f77bcf86cd799439012/can-review",
+              "host": ["{{base_url}}"],
+              "path": [
+                "reviews",
+                "job",
+                "507f1f77bcf86cd799439012",
+                "can-review"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Disputes",
+      "item": [
+        {
+          "name": "Create Dispute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "jobId",
+                  "value": "507f1f77bcf86cd799439012",
+                  "type": "text"
+                },
+                {
+                  "key": "reason",
+                  "value": "poor_quality",
+                  "description": "Dispute reason: poor_quality, no_show, payment_issue, behavior_issue, other",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "The work was not completed as agreed. Several issues remain unfixed and the quality is below standard.",
+                  "type": "text"
+                },
+                {
+                  "key": "evidence",
+                  "value": "{\"text\": \"Additional details about the poor quality work and specific issues found\"}",
+                  "description": "JSON string with additional text evidence",
+                  "type": "text"
+                },
+                {
+                  "key": "evidence[]",
+                  "description": "Upload evidence files (images/documents, max 5 files, 10MB each)",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/disputes",
+              "host": ["{{base_url}}"],
+              "path": ["disputes"]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Dispute Creation",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "jobId",
+                      "value": "507f1f77bcf86cd799439012",
+                      "type": "text"
+                    },
+                    {
+                      "key": "reason",
+                      "value": "poor_quality",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "The work was not completed as agreed.",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/disputes",
+                  "host": ["{{base_url}}"],
+                  "path": ["disputes"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"507f1f77bcf86cd799439016\",\n    \"job\": {\n      \"id\": \"507f1f77bcf86cd799439012\",\n      \"title\": \"Fix Kitchen Sink\",\n      \"status\": \"Disputed\"\n    },\n    \"initiator\": {\n      \"id\": \"507f1f77bcf86cd799439014\",\n      \"fullName\": \"John Client\",\n      \"role\": \"client\"\n    },\n    \"respondent\": {\n      \"id\": \"507f1f77bcf86cd799439015\",\n      \"fullName\": \"Ahmed Craftsman\",\n      \"role\": \"craftsman\"\n    },\n    \"reason\": \"poor_quality\",\n    \"description\": \"The work was not completed as agreed.\",\n    \"status\": \"open\",\n    \"priority\": \"medium\",\n    \"evidence\": [\n      {\n        \"text\": \"Additional details\",\n        \"images\": [\"https://res.cloudinary.com/craftworks/image/upload/v1691234567/dispute-evidence/evidence1.jpg\"],\n        \"attachments\": []\n      }\n    ],\n    \"createdAt\": \"2025-08-07T11:00:00.000Z\"\n  },\n  \"message\": \"Dispute created successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Dispute Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/disputes/507f1f77bcf86cd799439016",
+              "host": ["{{base_url}}"],
+              "path": ["disputes", "507f1f77bcf86cd799439016"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Evidence to Dispute",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "text",
+                  "value": "Here is additional evidence showing the poor quality of work.",
+                  "description": "Text evidence (optional, max 1000 characters)",
+                  "type": "text"
+                },
+                {
+                  "key": "evidence[]",
+                  "description": "Upload evidence files (images/documents, max 5 files, 10MB each)",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/disputes/507f1f77bcf86cd799439016/evidence",
+              "host": ["{{base_url}}"],
+              "path": ["disputes", "507f1f77bcf86cd799439016", "evidence"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Disputes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/disputes?page=1&limit=10&status=open",
+              "host": ["{{base_url}}"],
+              "path": ["disputes"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of disputes per page (default: 10, max: 50)"
+                },
+                {
+                  "key": "status",
+                  "value": "open",
+                  "description": "Filter by status: open, under_review, resolved, closed"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Disputes (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/disputes/admin/all?page=1&limit=20&status=open&priority=high",
+              "host": ["{{base_url}}"],
+              "path": ["disputes", "admin", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (default: 1)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of disputes per page (default: 20, max: 100)"
+                },
+                {
+                  "key": "status",
+                  "value": "open",
+                  "description": "Filter by status: open, under_review, resolved, closed"
+                },
+                {
+                  "key": "priority",
+                  "value": "high",
+                  "description": "Filter by priority: low, medium, high"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resolve Dispute (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"After reviewing the evidence, the craftsman will redo the work at no extra cost within 5 business days.\",\n  \"refundAmount\": 0,\n  \"penaltyToUser\": \"507f1f77bcf86cd799439015\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/disputes/507f1f77bcf86cd799439016/resolve",
+              "host": ["{{base_url}}"],
+              "path": ["disputes", "507f1f77bcf86cd799439016", "resolve"]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Dispute Resolution",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"decision\": \"After reviewing the evidence, the craftsman will redo the work at no extra cost.\",\n  \"refundAmount\": 0,\n  \"penaltyToUser\": \"507f1f77bcf86cd799439015\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/disputes/507f1f77bcf86cd799439016/resolve",
+                  "host": ["{{base_url}}"],
+                  "path": ["disputes", "507f1f77bcf86cd799439016", "resolve"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"507f1f77bcf86cd799439016\",\n    \"status\": \"resolved\",\n    \"resolution\": {\n      \"decision\": \"After reviewing the evidence, the craftsman will redo the work at no extra cost.\",\n      \"refundAmount\": 0,\n      \"resolvedAt\": \"2025-08-07T12:00:00.000Z\",\n      \"resolvedBy\": {\n        \"id\": \"507f1f77bcf86cd799439020\",\n        \"fullName\": \"Admin User\",\n        \"role\": \"admin\"\n      }\n    }\n  },\n  \"message\": \"Dispute resolved successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wallet Management",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/balance",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/transactions?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "transactions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "type",
+                  "value": "income",
+                  "disabled": true
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2025-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2025-01-31",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Request Withdrawal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500.00,\n  \"bankDetails\": {\n    \"accountNumber\": \"1234567890\",\n    \"bankName\": \"National Bank of Egypt\",\n    \"accountHolderName\": \"Ahmed Hassan\",\n    \"iban\": \"EG380003000012345678901234567\"\n  },\n  \"note\": \"Monthly withdrawal\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wallet/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "withdraw"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Withdrawal Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wallet/withdrawals?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["wallet", "withdrawals"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/payments/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "payments", "dashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/payments?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "payments"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "paymentMethod",
+                  "value": "visa",
+                  "disabled": true
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2025-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2025-01-31",
+                  "disabled": true
+                },
+                {
+                  "key": "craftsman",
+                  "value": "CRAFTSMAN_ID",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Withdrawals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/withdrawals?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "withdrawals"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2025-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2025-01-31",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process Withdrawal Request",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"approve\",\n  \"adminNote\": \"Approved after bank verification\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/withdrawals/WITHDRAWAL_ID",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "withdrawals", "WITHDRAWAL_ID"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contact Email",
+      "item": [
+        {
+          "name": "Send Contact Email (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"Hello, I have a question about your services. Could you please provide more information about pricing for electrical work?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/send-email",
+              "host": ["{{base_url}}"],
+              "path": ["send-email"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

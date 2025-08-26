@@ -1,5 +1,5 @@
 const Mobile = () => {
-  return <div>Mobile</div>;
+  return <main>Mobile</main>;
 };
 
 export default Mobile;

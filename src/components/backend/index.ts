@@ -1,0 +1,11 @@
+export { default as BackendHero } from './BackendHero';
+export { default as ApiPerformanceStats } from './ApiPerformanceStats';
+export { default as TechnologyStack } from './TechnologyStack';
+export { default as ApiFeaturesGrid } from './ApiFeaturesGrid';
+export { default as ApiArchitecture } from './ApiArchitecture';
+export { default as PlatformEcosystem } from './PlatformEcosystem';
+export { default as ProjectHighlights } from './ProjectHighlights';
+export { default as IntegrationExamples } from './IntegrationExamples';
+export { default as ErrorHandling } from './ErrorHandling';
+export { default as EnhancedCTA } from './EnhancedCTA';
+export { default as ApiDocumentation } from './ApiDocumentation';
