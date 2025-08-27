@@ -30,16 +30,6 @@ const Backend: React.FC = () => {
           content="backend system, TypeScript, Node.js, MongoDB, real-time messaging, payment processing, multi-platform architecture, craftsman marketplace"
         />
         <link rel="canonical" href="https://herfa-g.netlify.app/backend" />
-
-        <meta
-          property="og:image"
-          content="https://raw.githubusercontent.com/3bdulrahmn69/craftworks-gallery/refs/heads/main/public/backend.png"
-        />
-
-        <meta
-          property="twitter:image"
-          content="https://raw.githubusercontent.com/3bdulrahmn69/craftworks-gallery/refs/heads/main/public/backend.png"
-        />
       </Helmet>
 
       <main>

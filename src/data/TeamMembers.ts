@@ -5,7 +5,7 @@ import Mona_Abdelazim from '/Mona_Abdelazim.jpg';
 export const TeamMembers: TeamMember[] = [
   {
     name: 'Abdulrahman Moussa',
-    role: 'Full Stack Developer',
+    role: 'MERN Stack Developer',
     avatar: Abdulrahman_Moussa,
     bio: 'Experienced in building scalable web applications with a focus on user experience.',
     location: 'Cairo, Egypt',

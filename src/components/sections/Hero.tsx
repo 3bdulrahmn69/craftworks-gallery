@@ -1,5 +1,5 @@
 import type React from 'react';
-import { FiArrowRight, FiPlay, FiChevronDown } from 'react-icons/fi';
+import { FiArrowRight, FiChevronDown } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi';
 
 const stats = [
@@ -70,13 +70,6 @@ const Hero: React.FC = () => {
                 Explore Platform
                 <FiArrowRight className="w-4 h-4" aria-hidden="true" />
               </a>
-              <button
-                className="inline-flex items-center gap-2 px-8 py-3 border border-slate-300/30 hover:border-slate-300/50 text-white font-semibold rounded-lg transition-all duration-200 hover:bg-white/5"
-                aria-label="Watch Herfa platform demo video"
-              >
-                <FiPlay className="w-4 h-4" aria-hidden="true" />
-                Watch Demo
-              </button>
             </div>
           </nav>
 

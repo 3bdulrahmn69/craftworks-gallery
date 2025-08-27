@@ -1,8 +1,8 @@
 {
   "info": {
     "name": "Craftworks Backend API",
-    "description": "Complete API collection for Craftworks backend with all endpoints including authentication, users, jobs (with enhanced search and filtering), quotes, invitations, notifications, services, real-time messaging, reviews & disputes, comprehensive wallet management, payment processing, admin payment dashboard, and withdrawal management. v2.1.0 Updates: Implemented a dynamic fee structure based on completed jobs count (0% for first job, gradually increasing to 5%), removed fee-config endpoints in favor of code-based fee management, added completed jobs tracking for both clients and craftsmen. v2.0.0 Updates: Major system enhancement with comprehensive wallet management - added job duration tracking, enhanced quote system with duration requirements, complete wallet system for craftsman income and withdrawals, admin payment dashboard with withdrawal processing.",
-    "version": "2.1.0",
+    "description": "Complete API collection for Craftworks backend with all endpoints including authentication, users, jobs (with enhanced search and filtering), quotes, invitations, notifications, services, real-time messaging, reviews & disputes, comprehensive wallet management, payment processing, admin payment dashboard, and withdrawal management. v2.3.0 Updates: Added automatic endDate calculation for jobs - When a craftsman is hired, the system automatically calculates and sets the job end date based on start date + duration according to job scope. End date is automatically updated when jobs are rescheduled. v2.2.0 Updates: Enhanced job creation with jobScope functionality - Added jobScope field that determines duration units for craftsman quotes. Clients specify job scope as 'small' (hours), 'medium' (days), or 'large' (weeks), which validates craftsman duration inputs accordingly. v2.1.0 Updates: Implemented a dynamic fee structure based on completed jobs count (0% for first job, gradually increasing to 5%), removed fee-config endpoints in favor of code-based fee management, added completed jobs tracking for both clients and craftsmen. v2.0.0 Updates: Major system enhancement with comprehensive wallet management - added job duration tracking, enhanced quote system with duration requirements, complete wallet system for craftsman income and withdrawals, admin payment dashboard with withdrawal processing.",
+    "version": "2.3.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -902,6 +902,12 @@
                   "description": "GeoJSON coordinates as comma-separated values: longitude,latitude. Supported formats: '31.2,30.1' (recommended), '[31.2,30.1]', or '[31.2, 30.1]'. Always longitude first, then latitude."
                 },
                 {
+                  "key": "jobScope",
+                  "value": "medium",
+                  "type": "text",
+                  "description": "Job scope determines duration units: small (hours), medium (days), large (weeks)"
+                },
+                {
                   "key": "paymentType",
                   "value": "Cash",
                   "type": "text",
@@ -943,7 +949,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Fix kitchen sink leak\",\n  \"description\": \"There is a persistent leak under the kitchen sink that needs immediate attention. Water is pooling and causing damage.\",\n  \"service\": \"60f1b5b5b5b5b5b5b5b5b5b1\",\n  \"address\": {\n    \"country\": \"Egypt\",\n    \"state\": \"Cairo\",\n    \"city\": \"New Cairo\",\n    \"street\": \"123 Main Street\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [31.2, 30.1]\n  },\n  \"paymentType\": \"cash\",\n  \"jobDate\": \"2024-02-15T10:00:00.000Z\",\n  \"jobDuration\": 4\n}"
+              "raw": "{\n  \"title\": \"Fix kitchen sink leak\",\n  \"description\": \"There is a persistent leak under the kitchen sink that needs immediate attention. Water is pooling and causing damage.\",\n  \"service\": \"60f1b5b5b5b5b5b5b5b5b5b1\",\n  \"address\": {\n    \"country\": \"Egypt\",\n    \"state\": \"Cairo\",\n    \"city\": \"New Cairo\",\n    \"street\": \"123 Main Street\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [31.2, 30.1]\n  },\n  \"paymentType\": \"cash\",\n  \"jobDate\": \"2024-02-15T10:00:00.000Z\",\n  \"jobScope\": \"medium\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/jobs",
@@ -1014,6 +1020,12 @@
                   "description": "✅ RECOMMENDED FORMAT: Simple comma-separated string. Also supported: '[31.2,30.1]', '[ \\'31.2,30.1\\' ]', '[31.2, 30.1]'"
                 },
                 {
+                  "key": "jobScope",
+                  "value": "small",
+                  "type": "text",
+                  "description": "Job scope: small (hours), medium (days), large (weeks)"
+                },
+                {
                   "key": "paymentType",
                   "value": "Cash",
                   "type": "text"
@@ -1039,7 +1051,7 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/jobs?service=Plumbing&status=Posted&state=Cairo&city=New Cairo&paymentType=Cash&page=1&limit=10",
+              "raw": "{{base_url}}/jobs?service=Plumbing&status=Posted&jobScope=small&state=Cairo&city=New Cairo&paymentType=Cash&page=1&limit=10",
               "host": ["{{base_url}}"],
               "path": ["jobs"],
               "query": [
@@ -1052,6 +1064,11 @@
                   "key": "status",
                   "value": "Posted",
                   "description": "Filter by status"
+                },
+                {
+                  "key": "jobScope",
+                  "value": "small",
+                  "description": "Filter by job scope (small, medium, large)"
                 },
                 {
                   "key": "state",
@@ -1077,6 +1094,31 @@
                   "key": "limit",
                   "value": "10",
                   "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Jobs by JobScope",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/jobs?jobScope=small",
+              "host": ["{{base_url}}"],
+              "path": ["jobs"],
+              "query": [
+                {
+                  "key": "jobScope",
+                  "value": "small",
+                  "description": "Filter by job scope: small (hours), medium (days), large (weeks)"
                 }
               ]
             }
@@ -1581,7 +1623,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"response\": \"Accepted\",\n  \"price\": 150.00,\n  \"notes\": \"I can complete this job within 2 days with high quality materials and provide warranty\"\n}"
+              "raw": "{\n  \"response\": \"Accepted\",\n  \"price\": 150.00,\n  \"duration\": 2,\n  \"notes\": \"I can complete this job within 2 days with high quality materials and provide warranty\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/jobs/:jobId/invitations/respond",
