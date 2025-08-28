@@ -95,7 +95,6 @@ const ResultsImpact: React.FC = () => {
   ];
 
   const futureEnhancements = [
-    'Mobile application development with React Native',
     'Advanced analytics and business intelligence dashboard',
     'AI-powered matching algorithm for craftsmen and jobs',
     'Expanded payment gateway integrations',
